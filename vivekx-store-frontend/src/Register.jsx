@@ -1,5 +1,5 @@
 import API_BASE_URL from "./config";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./App.css";
 
 function Register() {
