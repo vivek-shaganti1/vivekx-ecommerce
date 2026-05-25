@@ -1,0 +1,459 @@
+/* ============================================================
+   LANDING PAGE — Futuristic AI Interface (V3 - Final Polished)
+   LandingPage.css
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+/* ── Reset & Root ── */
+.lp-root {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', system-ui, sans-serif;
+  z-index: 99999;
+  background-color: #000;
+  color: #fff;
+  transition: all 0.5s ease;
+}
+
+/* ── Themes ── */
+
+.lp-dark {
+  background: #000000 !important;
+
+  --accent: #e50914;
+  /* premium crimson */
+  --accent-glow: rgba(229, 9, 20, 0.5);
+}
+
+/* soft glow */
+
+
+.lp-light {
+  background: #fdfdfd !important;
+  color: #000;
+  --accent: #ffb400;
+  /* Gold */
+  --accent-glow: rgba(255, 180, 0, 0.2);
+}
+
+.lp-panther {
+  background: #050010 !important;
+  --accent: #9d6fff;
+  /* Purple */
+  --accent-glow: rgba(157, 111, 255, 0.3);
+}
+
+/* ── Overlay Layer (Tech Grid) ── */
+.lp-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.lp-light .lp-grid {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}
+
+/* ── Particles Canvas ── */
+.lp-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Top Bar Content ── */
+.lp-topbar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 40px 60px;
+}
+
+.lp-top-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lp-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  opacity: 0.6;
+}
+
+.lp-version {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+.lp-topnav {
+  display: flex;
+  gap: 32px;
+}
+
+.lp-topnav span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  opacity: 0.45;
+  transition: opacity 0.3s ease;
+}
+
+.lp-topnav span:hover {
+  opacity: 1;
+}
+
+.lp-nav-ethics {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lp-box-icon {
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* ── Premium Theme Switcher ── */
+.lp-theme-switcher {
+  position: fixed;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 5px;
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+.lp-light .lp-theme-switcher {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.lp-theme-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 1.5px;
+  opacity: 0.5;
+  text-transform: uppercase;
+}
+
+.lp-light .lp-theme-btn {
+  color: #000;
+}
+
+.lp-theme-btn.active {
+  background: #fff;
+  color: #000;
+  opacity: 1;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.lp-light .lp-theme-btn.active {
+  background: #000;
+  color: #fff;
+}
+
+.lp-theme-btn:not(.active):hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.lp-light .lp-theme-btn:not(.active):hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Special Panther Active State */
+.lp-panther .lp-theme-btn.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* ── Hero Center ── */
+.lp-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  margin-top: -20px;
+  animation: heroReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes heroReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lp-status-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 12px;
+  opacity: 0.4;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.lp-status-text::before {
+  content: '';
+  position: absolute;
+  left: -40px;
+  top: 50%;
+  width: 30px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+.lp-status-text::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  width: 30px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+.lp-title-block {
+  display: flex;
+  flex-direction: column;
+  line-height: 0.8;
+  margin-bottom: 20px; /* even smaller margin to save space */
+  user-select: none;
+  text-align: center;
+}
+
+.lp-title-solid {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(60px, 12vw, 150px); /* reduced from 180px */
+  font-weight: 900;
+  letter-spacing: -4px;
+  margin: 0;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #fff 40%, rgba(255, 255, 255, 0.4) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lp-light .lp-title-solid {
+  background: linear-gradient(180deg, #000 40%, rgba(0, 0, 0, 0.4) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lp-title-outline {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(60px, 12vw, 150px); /* reduced from 180px */
+  font-weight: 900;
+  letter-spacing: -4px;
+  margin: 0;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.15);
+  text-transform: uppercase;
+}
+
+.lp-light .lp-title-outline {
+  -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Button Overhaul (Matches Singularity) ── */
+.lp-cta {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 22px 64px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 5px;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  box-shadow: 0 10px 40px var(--accent-glow);
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+
+.lp-cta:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 50px var(--accent-glow);
+  letter-spacing: 7px;
+}
+
+
+/* ── Bottom Content Layout ── */
+.lp-bottom-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 60px 40px;
+}
+
+.lp-bottom-left {
+  text-align: left;
+  max-width: 300px;
+}
+
+.lp-mission-line {
+  width: 40px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  margin-bottom: 12px;
+}
+
+.lp-light .lp-mission-line {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.lp-bottom-left p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: 1.5px;
+  opacity: 0.6;
+  margin: 0;
+}
+
+.lp-bottom-right {
+  display: flex;
+  gap: 50px;
+}
+
+.lp-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.lp-stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  opacity: 0.5;
+  margin-bottom: 4px;
+}
+
+.lp-stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ── Route Layout Fixes ── */
+
+/* scope override only when landing page is present */
+body:has(.lp-root) .page-container {
+  padding-top: 0 !important;
+}
+
+/* hide navbar only on landing page */
+body:has(.lp-root) .nav-bar {
+  display: none !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+
+  .lp-topbar,
+  .lp-bottom-content {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .lp-topnav {
+    display: none;
+  }
+
+  .lp-bottom-right {
+    display: none;
+  }
+
+  .lp-hero {
+    margin-top: 0;
+  }
+
+  .lp-status-text {
+    letter-spacing: 5px;
+    font-size: 10px;
+  }
+
+  .lp-title-solid,
+  .lp-title-outline {
+    font-size: 70px;
+    letter-spacing: -2px;
+  }
+
+  .lp-cta {
+    font-size: 13px;
+    padding: 14px 28px;
+  }
+}
+
+.landing-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background: black;
+  overflow: hidden;
+  position: relative;
+}

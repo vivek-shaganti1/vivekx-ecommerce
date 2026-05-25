@@ -1,0 +1,227 @@
+/* ============================================================
+   INDEX.CSS — VIVEKX COLLECTIONS  
+   Base reset & foundational styles
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Color Palette — Dark (Default) */
+  --bg-primary: #050508;
+  --bg-secondary: #0d0d14;
+  --bg-card: #12121c;
+  --bg-elevated: #1a1a28;
+
+  --text-primary: #f0f0f8;
+  --text-secondary: #a0a0bc;
+  --text-muted: #5a5a78;
+
+  --accent-primary: #e50914;
+  --accent-secondary: #ff3d3d;
+  --accent-glow: rgba(229, 9, 20, 0.45);
+
+  --gold: #caa133;
+  --gold-light: #e8c04e;
+  --gold-dark: #9a7820;
+  --gold-glow: rgba(202, 161, 51, 0.4);
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-accent: rgba(229, 9, 20, 0.35);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.8);
+  --shadow-red: 0 0 40px rgba(229, 9, 20, 0.5);
+  --shadow-gold: 0 0 40px rgba(202, 161, 51, 0.4);
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+
+  --transition-fast: 0.15s ease;
+  --transition-mid: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  --font-primary: 'Inter', system-ui, sans-serif;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --navbar-height: 72px;
+}
+
+/* Light mode token overrides */
+body.light {
+  --bg-primary: #f8f8fc;
+  --bg-secondary: #f0f0f8;
+  --bg-card: #ffffff;
+  --bg-elevated: #f5f5fa;
+
+  --text-primary: #0d0d14;
+  --text-secondary: #444466;
+  --text-muted: #888899;
+
+  --accent-primary: #caa133;
+  --accent-secondary: #e8c04e;
+  --accent-glow: rgba(202, 161, 51, 0.35);
+
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-accent: rgba(202, 161, 51, 0.4);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.16);
+  --shadow-red: 0 0 40px rgba(202, 161, 51, 0.4);
+  --shadow-gold: 0 0 40px rgba(202, 161, 51, 0.35);
+}
+
+/* ============================================================
+   BLACK PANTHER THEME (Wakanda Forever)
+   ============================================================ */
+body.panther {
+  --bg-primary: #0a0a0c;
+  --bg-secondary: #121216;
+  --bg-card: #181820;
+  --bg-elevated: #22222d;
+
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b8;
+  --text-muted: #666670;
+
+  --accent-primary: #7D12FF;
+  /* Neon Purple */
+  --accent-secondary: #ff8c33;
+  /* Draftly Orange */
+  --accent-glow: rgba(125, 18, 255, 0.4);
+
+  --gold: #ff8c33;
+  --gold-light: #ffad66;
+  --gold-dark: #cc6e29;
+
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-accent: rgba(125, 18, 255, 0.3);
+
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+}
+
+/* ============================================================
+   GLOBAL RESET
+   ============================================================ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-mid), color var(--transition-mid);
+}
+
+/* ============================================================
+   TYPOGRAPHY BASE
+   ============================================================ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: var(--font-primary);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+input,
+textarea,
+select {
+  font-family: var(--font-primary);
+  outline: none;
+}
+
+/* ============================================================
+   SCROLLBAR STYLING
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ============================================================
+   SELECTION
+   ============================================================ */
+::selection {
+  background: var(--accent-primary);
+  color: #fff;
+}
+
+.navbar svg,
+.admin-page svg,
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+}

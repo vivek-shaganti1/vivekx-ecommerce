@@ -1,0 +1,243 @@
+/* ============================= */
+/* COLLECTIBLE RARITY GLOW */
+/* ============================= */
+
+.rarity-ULTRA_RARE {
+
+    box-shadow:
+        0 0 12px rgba(168, 85, 247, 0.8),
+        0 0 25px rgba(168, 85, 247, 0.6),
+        0 0 40px rgba(168, 85, 247, 0.4);
+
+    border: 1px solid #a855f7;
+
+    transition: 0.3s;
+
+}
+
+
+.rarity-RARE {
+
+    box-shadow:
+        0 0 10px rgba(59, 130, 246, 0.7),
+        0 0 20px rgba(59, 130, 246, 0.5);
+
+    border: 1px solid #3b82f6;
+
+    transition: 0.3s;
+
+}
+
+
+.rarity-COMMON {
+
+    box-shadow:
+        0 0 6px rgba(120, 120, 120, 0.4);
+
+    border: 1px solid rgba(120, 120, 120, 0.6);
+
+    transition: 0.3s;
+
+}
+
+
+
+/* ============================= */
+/* OWNED BADGE */
+/* ============================= */
+
+.collectible-badge {
+
+    position: absolute;
+
+    top: 10px;
+
+    left: 10px;
+
+    background: black;
+
+    color: white;
+
+    padding: 4px 9px;
+
+    font-size: 10px;
+
+    border-radius: 6px;
+
+    letter-spacing: 1px;
+
+    font-weight: 600;
+
+}
+
+
+
+/* ============================= */
+/* XP BAR */
+/* ============================= */
+
+.xp-navbar {
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    padding: 8px 30px;
+
+}
+
+
+.nav-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.xp-text {
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #ff3c3c;
+
+    letter-spacing: 1px;
+
+}
+
+
+.xp-container {
+
+    width: 130px;
+
+    height: 6px;
+
+    background: #1a1a1a;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+}
+
+
+.xp-bar {
+
+    height: 100%;
+
+    border-radius: 10px;
+
+    background: linear-gradient(90deg,
+
+            #ff0000,
+
+            #ff4d4d,
+
+            #ff0000);
+
+    box-shadow:
+
+        0 0 8px rgba(255, 0, 0, 0.7),
+
+        0 0 14px rgba(255, 0, 0, 0.4);
+
+}
+
+
+
+/* ============================= */
+/* RARITY LEGEND */
+/* ============================= */
+
+.rarity-legend {
+
+    display: flex;
+
+    gap: 25px;
+
+    margin-top: 20px;
+
+    font-size: 13px;
+
+    opacity: 0.9;
+
+}
+
+
+.legend-box {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+}
+
+
+.legend-color {
+
+    width: 14px;
+
+    height: 14px;
+
+    border-radius: 4px;
+
+}
+
+
+
+/* colors */
+
+.legend-ultra {
+
+    background: #a855f7;
+
+}
+
+
+.legend-rare {
+
+    background: #3b82f6;
+
+}
+
+
+.legend-common {
+
+    background: gray;
+
+}
+
+
+
+/* ============================= */
+/* HOVER EFFECT */
+/* ============================= */
+
+.rarity-ULTRA_RARE:hover {
+
+    transform: scale(1.04);
+
+}
+
+
+.rarity-RARE:hover {
+
+    transform: scale(1.03);
+
+}
+
+
+.rarity-COMMON:hover {
+
+    transform: scale(1.02);
+
+}
