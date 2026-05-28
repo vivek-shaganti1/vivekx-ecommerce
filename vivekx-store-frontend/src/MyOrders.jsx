@@ -20,14 +20,7 @@ function MyOrders() {
         setLoading(false); 
       })
       .catch(() => {
-        // Mock data when backend is not running to still permit testing
-        const mockData = [
-          {
-            id: "VKX-8821", status: "SHIPPED", totalAmount: 24999, date: "2024-03-18",
-            items: [{ id: 1, quantity: 1, product: { name: "Chrono X Elite", price: 24999 } }]
-          }
-        ];
-        setOrders(mockData);
+        setOrders([]);
         setLoading(false);
       });
   }

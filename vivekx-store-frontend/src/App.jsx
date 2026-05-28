@@ -31,7 +31,7 @@ function PublicRoute({ user, children }) {
 }
 
 function AdminRoute({ user, children }) {
-  return user?.role === "ADMIN"
+  return user?.role?.toUpperCase() === "ADMIN"
     ? children
     : <Navigate to="/home" replace />;
 }
@@ -42,9 +42,7 @@ function AdminRoute({ user, children }) {
 function App() {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user"))
-  );
+  const [user, setUser] = useState(null);
 
   const [cartCount, setCartCount] = useState(0);
 
@@ -52,12 +50,24 @@ function App() {
     localStorage.getItem("theme") || "dark"
   );
 
+  /* Hydrate user state on mount to prevent hydration/stale state issues */
+  useEffect(() => {
+    const saved = localStorage.getItem("user");
+    if (saved) {
+      try {
+        setUser(JSON.parse(saved));
+      } catch (e) {
+        localStorage.removeItem("user");
+      }
+    }
+  }, []);
+
   /* Global Toast for Order Notifications */
   const [globalToast, setGlobalToast] = useState("");
   const previousOrdersRef = useRef([]);
 
   useEffect(() => {
-    if (!user?.token || user.role === "ADMIN") return;
+    if (!user?.token || user.role?.toUpperCase() === "ADMIN") return;
 
     function checkOrderStatus() {
       fetch(`${API_BASE_URL}/api/orders/my`, {
@@ -130,7 +140,16 @@ function App() {
 
   useEffect(() => {
     function syncUser() {
-      setUser(JSON.parse(localStorage.getItem("user")));
+      const saved = localStorage.getItem("user");
+      if (saved) {
+        try {
+          setUser(JSON.parse(saved));
+        } catch (e) {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
     }
 
     window.addEventListener("auth-change", syncUser);
@@ -221,8 +240,10 @@ function App() {
 
   function handleLogout() {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
     setCartCount(0);
+    window.dispatchEvent(new Event("auth-change"));
     navigate("/login");
   }
 
@@ -293,7 +314,7 @@ function App() {
                 <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
               </div>
 
-              {user.role === "ADMIN" && (
+              {user.role?.toUpperCase() === "ADMIN" && (
                 <>
                   <div className="nav-item">
                     <Link to="/admin">Dashboard</Link>
@@ -389,7 +410,7 @@ function App() {
           />
 
           {/* EDIT */}
-          <Route path="/edit/:id" element={<EditProduct />} />
+          <Route path="/edit/:id" element={<AdminRoute user={user}><EditProduct /></AdminRoute>} />
 
         </Routes>
       </div>

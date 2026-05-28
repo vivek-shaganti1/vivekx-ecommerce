@@ -33,7 +33,7 @@ function AdminOrders() {
 
   const filteredOrders = orders.filter(o => {
     const term = search.toLowerCase();
-    const matchSearch = o.user?.name?.toLowerCase().includes(term) || o.id.includes(term);
+    const matchSearch = o.user?.name?.toLowerCase().includes(term) || String(o.id).includes(term);
     const matchFilter = filter === "ALL" || o.status === filter;
     return matchSearch && matchFilter;
   });
