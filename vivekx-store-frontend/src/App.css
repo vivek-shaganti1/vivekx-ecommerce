@@ -4599,13 +4599,8 @@ body.panther .logo-sub {
 /* ============================================================
    KINETIC HUD PARTICLE SYSTEM (Crazy Edition)
    ============================================================ */
-body.panther {
-  cursor: none;
-  /* Custom Panther Cursor */
-}
-
-body.panther a,
-body.panther button {
+body.panther,
+body.panther * {
   cursor: none !important;
 }
 
@@ -4617,40 +4612,48 @@ body.panther button {
   overflow: hidden;
 }
 
-/* Custom Cursor - Slim Crosshair Dot - Guaranteed Top */
+/* Custom Cursor - Slim Crosshair Dot with Outer Circular Ring */
 .panther-cursor {
   position: fixed;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background: #fff;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   z-index: 2147483647 !important;
-  /* ABSOLUTE TOP */
   pointer-events: none;
-  box-shadow: 0 0 15px #fff, 0 0 30px var(--accent-secondary);
-  transition: width 0.3s, height 0.3s, background 0.3s;
+  box-shadow: 0 0 10px #fff, 0 0 20px #7D12FF;
+  transition: width 0.2s, height 0.2s, background 0.2s, box-shadow 0.2s;
+  will-change: left, top;
 }
 
-.panther-cursor::before,
+/* Outer Target Ring */
 .panther-cursor::after {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  transform: translate(-50%, -50%);
-  transition: all 0.3s ease;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(125, 18, 255, 0.4);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(125, 18, 255, 0.2);
 }
 
+/* Crosshair vertical line element */
 .panther-cursor::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 2px;
-  height: 40px;
-}
-
-.panther-cursor::after {
-  width: 40px;
-  height: 2px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.35);
+  transform: translate(-50%, -50%);
+  transition: all 0.2s;
 }
 
 /* 3D Grid from AURA images */
@@ -4766,19 +4769,49 @@ body.panther .hero-title span {
 }
 
 
-/* Custom Cursor Interaction */
+/* Custom Cursor Interaction - Hovering State (Interactive elements) */
 .panther-cursor.hovering {
-  width: 6px;
-  height: 6px;
-  background: var(--accent-secondary);
+  width: 8px;
+  height: 8px;
+  background: #ff8c33;
+  box-shadow: 0 0 12px #ff8c33, 0 0 25px #7D12FF;
 }
 
 .panther-cursor.hovering::after {
-  width: 50px;
-  height: 50px;
-  border-color: var(--accent-secondary);
-  border-width: 2px;
-  box-shadow: 0 0 20px var(--accent-glow);
+  width: 32px;
+  height: 32px;
+  border-color: #ff8c33;
+  border-width: 2.5px;
+  box-shadow: 0 0 15px rgba(255, 140, 51, 0.4);
+  animation: cursorRingPulse 1.2s infinite ease-in-out;
+}
+
+@keyframes cursorRingPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.4; }
+}
+
+/* Custom Cursor Interaction - Typing State (Text input fields) */
+.panther-cursor.typing {
+  width: 2px;
+  height: 22px;
+  border-radius: 2px;
+  background: #7D12FF;
+  box-shadow: 0 0 10px #7D12FF, 0 0 20px #ff8c33;
+}
+
+.panther-cursor.typing::after {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  border: none;
+}
+
+.panther-cursor.typing::before {
+  width: 8px;
+  height: 2px;
+  background: #7D12FF;
+  transform: translate(-50%, -50%);
 }
 
 /* 3 Slant Lines (Top Left) */
@@ -7068,4 +7101,13 @@ body.panther .pd-thumbnails .pd-thumb img {
   object-fit: cover !important;
   border-radius: 50% !important;
   display: block !important;
+}
+
+/* ============================================================
+   RESPONSIVE LAYOUT SCALING (90% Zoom on Chrome >= 1024px)
+   ============================================================ */
+@media screen and (min-width: 1024px) {
+  .app-layout-wrapper {
+    zoom: 0.9;
+  }
 }

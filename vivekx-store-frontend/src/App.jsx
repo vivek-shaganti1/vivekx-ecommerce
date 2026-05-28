@@ -187,15 +187,13 @@ function App() {
     }
 
     const handleInteraction = (e) => {
-      if (isMuted) return;
-
       const target = e.target;
       const text = target.innerText?.toLowerCase() || "";
       const isAction = ["buy now", "add to cart", "track my order", "authorize"].some(s => text.includes(s));
       const cursor = document.querySelector(".panther-cursor");
 
-      // 1. Click logic for action buttons
-      if (e.type === "click") {
+      // 1. Click logic for action/interaction feedback sounds
+      if (e.type === "click" && !isMuted) {
         if (document.body.classList.contains("panther")) {
           import("./utils/audio").then(({ playPantherClickSound }) => playPantherClickSound());
         } else {
@@ -203,22 +201,35 @@ function App() {
         }
       }
 
-      // 2. Hover logic (Simulated MouseEnter)
+      // 2. Hover logic for interactive elements
       if (e.type === "mouseover") {
         const card = target.closest(".poster-card, .lux-gallery-card, .product-card, .card-media");
-        const btn = target.closest("button, a");
+        const btn = target.closest("button, a, [role='button'], .auth-pw-toggle, .auth-link, .clickable");
+        const isInput = target.matches("input, textarea, [contenteditable='true']");
         const from = e.relatedTarget;
         const wasInCard = from ? from.closest(".poster-card, .lux-gallery-card, .product-card, .card-media") : null;
 
-        if (card && !wasInCard) {
+        if (card && !wasInCard && !isMuted) {
           import("./utils/audio").then(({ playHoverSound }) => playHoverSound());
         }
 
-        if (btn && cursor) cursor.classList.add("hovering");
+        if (cursor) {
+          if (btn) {
+            cursor.className = "panther-cursor hovering";
+          } else if (isInput) {
+            cursor.className = "panther-cursor typing";
+          } else {
+            cursor.className = "panther-cursor";
+          }
+        }
       }
 
       if (e.type === "mouseout" && cursor) {
-        cursor.classList.remove("hovering");
+        const to = e.relatedTarget;
+        const isStillInsideInteractive = to ? to.closest("button, a, [role='button'], .auth-pw-toggle, .auth-link, .clickable, input, textarea, [contenteditable='true']") : null;
+        if (!isStillInsideInteractive) {
+          cursor.className = "panther-cursor";
+        }
       }
     };
 
@@ -272,147 +283,149 @@ function App() {
         </>
       )}
 
-      {/* =========================
-          NAVBAR
-      ========================= */}
-      <nav className="nav-bar">
+      <div className="app-layout-wrapper">
+        {/* =========================
+            NAVBAR
+        ========================= */}
+        <nav className="nav-bar">
 
-        <Link to="/home" className="nav-logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {theme === 'panther' && <span className="vxp-badge">P-01</span>}
-          <div className="logo-text-wrap" style={{ display: 'flex', flexDirection: 'column', lineHeight: '1' }}>
-            <span className="logo-main">VIVEKX</span>
-            <span className="logo-sub">Collections</span>
+          <Link to="/home" className="nav-logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {theme === 'panther' && <span className="vxp-badge">P-01</span>}
+            <div className="logo-text-wrap" style={{ display: 'flex', flexDirection: 'column', lineHeight: '1' }}>
+              <span className="logo-main">VIVEKX</span>
+              <span className="logo-sub">Collections</span>
+            </div>
+          </Link>
+
+          {/* NAV LINKS */}
+          <div className="nav-links">
+
+            {!user ? (
+              <>
+                <div className="nav-item">
+                  <Link to="/login">Login</Link>
+                  <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
+                </div>
+
+                <div className="nav-item">
+                  <Link to="/register">Register</Link>
+                  <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="nav-item">
+                  <Link to="/cart">
+                    Cart <span className="cart-count">{cartCount}</span>
+                  </Link>
+                  <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
+                </div>
+
+                <div className="nav-item">
+                  <Link to="/orders">My Orders</Link>
+                  <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
+                </div>
+
+                {user.role?.toUpperCase() === "ADMIN" && (
+                  <>
+                    <div className="nav-item">
+                      <Link to="/admin">Dashboard</Link>
+                      <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
+                    </div>
+
+                    <div className="nav-item">
+                      <Link to="/admin/orders">Orders</Link>
+                      <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
+                    </div>
+                  </>
+                )}
+
+                <div className="nav-item nav-user">
+                  Hi, {user.name}
+                  <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
+                </div>
+
+                <button className="logout-btn" onClick={handleLogout}>
+                  Logout
+                </button>
+              </>
+            )}
+
+            <button
+              className={`panther-toggle ${theme === 'panther' ? 'active' : ''}`}
+              onClick={() => {
+                const t = theme === 'panther' ? 'dark' : 'panther';
+                setTheme(t);
+                localStorage.setItem('theme', t);
+              }}
+              title="Panther Edition"
+            >
+              <span>🐈‍⬛</span>
+            </button>
+
+            <button
+              className={`sound-toggle ${!isMuted ? 'active' : ''}`}
+              onClick={() => setIsMuted(!isMuted)}
+              title="Toggle Sound"
+            >
+              {isMuted ? "🔇" : "🔊"}
+            </button>
+
+            <button className="theme-toggle" onClick={toggleTheme}>
+              <span className="toggle-thumb" />
+            </button>
           </div>
-        </Link>
+        </nav>
 
-        {/* NAV LINKS */}
-        <div className="nav-links">
+        {/* =========================
+            PAGE CONTENT
+        ========================= */}
+        <div className="page-container">
+          <Routes>
 
-          {!user ? (
-            <>
-              <div className="nav-item">
-                <Link to="/login">Login</Link>
-                <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
-              </div>
+            {/* FIRST PAGE (Landing Page before login) */}
+            <Route path="/" element={<LandingPage theme={theme || "dark"} />} />
 
-              <div className="nav-item">
-                <Link to="/register">Register</Link>
-                <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="nav-item">
-                <Link to="/cart">
-                  Cart <span className="cart-count">{cartCount}</span>
-                </Link>
-                <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
-              </div>
+            {/* optional alias */}
+            <Route path="/landing" element={<LandingPage theme={theme || "dark"} />} />
 
-              <div className="nav-item">
-                <Link to="/orders">My Orders</Link>
-                <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
-              </div>
+            {/* AUTH */}
+            <Route path="/login" element={<PublicRoute user={user}><Login /></PublicRoute>} />
+            <Route path="/register" element={<PublicRoute user={user}><Register /></PublicRoute>} />
+            <Route path="/forgot" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
-              {user.role?.toUpperCase() === "ADMIN" && (
-                <>
-                  <div className="nav-item">
-                    <Link to="/admin">Dashboard</Link>
-                    <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
-                  </div>
+            {/* USER */}
+            <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
+            <Route path="/products" element={user ? <Products /> : <Navigate to="/login" />} />
+            <Route path="/product/:slug" element={user ? <ProductDetails /> : <Navigate to="/login" />} />
+            <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
+            <Route path="/checkout" element={user ? <Checkout /> : <Navigate to="/login" />} />
+            <Route path="/order-success" element={user ? <CheckoutSuccess /> : <Navigate to="/login" />} />
+            <Route path="/track-order" element={user ? <TrackOrder /> : <Navigate to="/login" />} />
+            <Route path="/track-order/:id" element={user ? <TrackOrder /> : <Navigate to="/login" />} />
+            <Route path="/orders" element={user ? <MyOrders /> : <Navigate to="/login" />} />
 
-                  <div className="nav-item">
-                    <Link to="/admin/orders">Orders</Link>
-                    <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
-                  </div>
-                </>
-              )}
+            <Route path="/my-collectibles" element={<MyCollectibles />} />
 
-              <div className="nav-item nav-user">
-                Hi, {user.name}
-                <img src="/dark/arrow.png" className="nav-hover-arrow" alt="" />
-              </div>
+            {/* ADMIN */}
+            <Route path="/admin" element={<AdminRoute user={user}><AdminDashboard /></AdminRoute>} />
+            <Route path="/admin/orders" element={<AdminRoute user={user}><AdminOrders /></AdminRoute>} />
 
-              <button className="logout-btn" onClick={handleLogout}>
-                Logout
-              </button>
-            </>
-          )}
+            <Route
+              path="/admin/add-product"
+              element={
+                <AdminRoute user={user}>
+                  <AddProduct />
+                </AdminRoute>
+              }
+            />
 
-          <button
-            className={`panther-toggle ${theme === 'panther' ? 'active' : ''}`}
-            onClick={() => {
-              const t = theme === 'panther' ? 'dark' : 'panther';
-              setTheme(t);
-              localStorage.setItem('theme', t);
-            }}
-            title="Panther Edition"
-          >
-            <span>🐈‍⬛</span>
-          </button>
+            {/* EDIT */}
+            <Route path="/edit/:id" element={<AdminRoute user={user}><EditProduct /></AdminRoute>} />
 
-          <button
-            className={`sound-toggle ${!isMuted ? 'active' : ''}`}
-            onClick={() => setIsMuted(!isMuted)}
-            title="Toggle Sound"
-          >
-            {isMuted ? "🔇" : "🔊"}
-          </button>
-
-          <button className="theme-toggle" onClick={toggleTheme}>
-            <span className="toggle-thumb" />
-          </button>
+          </Routes>
         </div>
-      </nav>
-
-      {/* =========================
-          PAGE CONTENT
-      ========================= */}
-      <div className="page-container">
-        <Routes>
-
-          {/* FIRST PAGE (Landing Page before login) */}
-          <Route path="/" element={<LandingPage theme={theme || "dark"} />} />
-
-          {/* optional alias */}
-          <Route path="/landing" element={<LandingPage theme={theme || "dark"} />} />
-
-          {/* AUTH */}
-          <Route path="/login" element={<PublicRoute user={user}><Login /></PublicRoute>} />
-          <Route path="/register" element={<PublicRoute user={user}><Register /></PublicRoute>} />
-          <Route path="/forgot" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-
-          {/* USER */}
-          <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
-          <Route path="/products" element={user ? <Products /> : <Navigate to="/login" />} />
-          <Route path="/product/:slug" element={user ? <ProductDetails /> : <Navigate to="/login" />} />
-          <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
-          <Route path="/checkout" element={user ? <Checkout /> : <Navigate to="/login" />} />
-          <Route path="/order-success" element={user ? <CheckoutSuccess /> : <Navigate to="/login" />} />
-          <Route path="/track-order" element={user ? <TrackOrder /> : <Navigate to="/login" />} />
-          <Route path="/track-order/:id" element={user ? <TrackOrder /> : <Navigate to="/login" />} />
-          <Route path="/orders" element={user ? <MyOrders /> : <Navigate to="/login" />} />
-
-          <Route path="/my-collectibles" element={<MyCollectibles />} />
-
-          {/* ADMIN */}
-          <Route path="/admin" element={<AdminRoute user={user}><AdminDashboard /></AdminRoute>} />
-          <Route path="/admin/orders" element={<AdminRoute user={user}><AdminOrders /></AdminRoute>} />
-
-          <Route
-            path="/admin/add-product"
-            element={
-              <AdminRoute user={user}>
-                <AddProduct />
-              </AdminRoute>
-            }
-          />
-
-          {/* EDIT */}
-          <Route path="/edit/:id" element={<AdminRoute user={user}><EditProduct /></AdminRoute>} />
-
-        </Routes>
       </div>
 
       {/* =========================
