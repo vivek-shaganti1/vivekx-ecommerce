@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @RestController
 @RequestMapping("/api/cart")
-//@CrossOrigin(origins = "http://localhost:5173")
+@Transactional(readOnly = true)
 public class CartController {
 
     @Autowired

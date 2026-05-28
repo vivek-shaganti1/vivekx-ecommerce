@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.dto.ProductDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 @RestController
 @RequestMapping("/api/products")
-//@CrossOrigin(origins = "http://localhost:5173")
+@Transactional(readOnly = true)
 public class ProductController {
 
     @Autowired

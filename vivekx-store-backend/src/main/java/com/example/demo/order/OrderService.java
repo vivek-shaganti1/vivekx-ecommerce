@@ -152,7 +152,7 @@ public class OrderService {
 
 
 
-        order.setItems(List.of(item));
+        order.setItems(new java.util.ArrayList<>(List.of(item)));
 
         order.setTotalAmount(price * quantity);
 

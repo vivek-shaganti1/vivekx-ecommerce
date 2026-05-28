@@ -15,10 +15,11 @@ import com.example.demo.UserRepository;
 import com.example.demo.User;
 import com.example.demo.dto.OrderDTO;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @RestController
 @RequestMapping("/api/orders")
-//@CrossOrigin(origins = "http://localhost:5173")
+@Transactional(readOnly = true)
 public class OrderController {
 
         @Autowired
