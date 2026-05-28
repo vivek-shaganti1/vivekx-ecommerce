@@ -3,8 +3,10 @@ package com.example.demo.order;
 import com.example.demo.Product;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class OrderItem {
 
     @Id

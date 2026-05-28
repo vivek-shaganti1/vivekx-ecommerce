@@ -43,7 +43,11 @@
         </dependency>
 
         <!-- MySQL -->
-        
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- Security -->
         <dependency>
@@ -92,32 +96,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-  			<groupId>com.razorpay</groupId>
-  			<artifactId>razorpay-java</artifactId>
-  			<version>1.4.4</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+   			<groupId>com.razorpay</groupId>
+   			<artifactId>razorpay-java</artifactId>
+   			<version>1.4.4</version>
 		</dependency>
-		<dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-    <groupId>org.postgresql</groupId>
-    <artifactId>postgresql</artifactId>
-    <scope>runtime</scope>
-</dependency>
 
     </dependencies>
 
