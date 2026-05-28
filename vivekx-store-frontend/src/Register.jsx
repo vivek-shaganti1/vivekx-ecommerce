@@ -23,23 +23,34 @@ function Register() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: data.name.trim(),
-        email: data.email.trim(),
-        password: data.password.trim()
+        email: data.email.trim().toLowerCase(),
+        password: data.password
       })
     })
       .then(async res => {
         const text = await res.text();
-        if (!res.ok) throw new Error(text);
-        return text;
+        let json;
+        try {
+          json = JSON.parse(text);
+        } catch {
+          throw new Error("Server returned an unexpected response. Please try again.");
+        }
+
+        if (!res.ok || json.success === false) {
+          throw new Error(json.message || "Registration failed");
+        }
+
+        return json;
       })
       .then(() => {
-        setMessage("User registered successfully. Please login.");
+        setMessage("✅ Registered successfully! Please log in.");
         setData({ name: "", email: "", password: "" });
       })
       .catch(err => {
         setMessage(err.message || "Registration failed");
       });
   }
+
 
   return (
     <div className="login-page">

@@ -20,22 +20,35 @@ function Login() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: data.email.trim(),
-        password: data.password.trim()
+        email: data.email.trim().toLowerCase(),
+        password: data.password
       })
     })
       .then(async res => {
+        // Always parse as text first to avoid JSON parse crashes on error responses
         const text = await res.text();
-        if (!res.ok) throw new Error(text || "Login failed");
-        return JSON.parse(text);
+        let json;
+        try {
+          json = JSON.parse(text);
+        } catch {
+          throw new Error("Server returned an unexpected response. Please try again.");
+        }
+
+        if (!res.ok || json.success === false) {
+          throw new Error(json.message || "Login failed");
+        }
+
+        return json;
       })
       .then(user => {
+        // Store the user object (contains id, name, role, token)
         localStorage.setItem("user", JSON.stringify(user));
         window.dispatchEvent(new Event("auth-change"));
         navigate("/home");
       })
       .catch(err => setMessage(err.message));
   }
+
 
   return (
     <div className="login-page">

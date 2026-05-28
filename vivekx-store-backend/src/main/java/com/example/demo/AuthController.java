@@ -1,7 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.User;
-import com.example.demo.UserRepository;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.LoginResponse;
 import com.example.demo.dto.RegisterRequest;
@@ -12,9 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
-//@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
 
     @Autowired
@@ -26,43 +26,82 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    // ─────────────────────────────
+    // REGISTER
+    // ─────────────────────────────
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody RegisterRequest request) {
 
-        if (userRepo.findByEmail(request.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email already exists");
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            return badRequest("Email is required");
+        }
+
+        if (userRepo.findByEmail(request.getEmail().trim()).isPresent()) {
+            return badRequest("An account with this email already exists");
         }
 
         User user = new User();
         user.setName(request.getName());
-        user.setEmail(request.getEmail());
+        user.setEmail(request.getEmail().trim().toLowerCase());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole("USER");
         userRepo.save(user);
-        return ResponseEntity.ok("User registered");
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("success", true);
+        body.put("message", "Registration successful. Please log in.");
+        return ResponseEntity.ok(body);
     }
 
+    // ─────────────────────────────
+    // LOGIN
+    // ─────────────────────────────
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request) {
 
-        User user = userRepo.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email"));
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            return badRequest("Email is required");
         }
 
-        String token = jwtUtil.generateToken(
-        	    user.getEmail(),
-        	    user.getRole()
-        	);
-        return ResponseEntity.ok(
-        	    new LoginResponse(
-        	        user.getId(),
-        	        user.getName(),
-        	        user.getRole(),   // ✅ ADD
-        	        token
-        	    )
-        	);
+        User user = userRepo.findByEmail(request.getEmail().trim().toLowerCase())
+                .orElse(null);
+
+        if (user == null) {
+            // Use same message for security (don't reveal whether email exists)
+            return badRequest("Invalid email or password");
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return badRequest("Invalid email or password");
+        }
+
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+
+        LoginResponse loginResponse = new LoginResponse(
+                user.getId(),
+                user.getName(),
+                user.getRole(),
+                token
+        );
+
+        // Return structured JSON wrapper so frontend always gets consistent shape
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("success", true);
+        body.put("id", loginResponse.getId());
+        body.put("name", loginResponse.getName());
+        body.put("role", loginResponse.getRole());
+        body.put("token", loginResponse.getToken());
+
+        return ResponseEntity.ok(body);
+    }
+
+    // ─────────────────────────────
+    // Helper
+    // ─────────────────────────────
+    private ResponseEntity<Map<String, Object>> badRequest(String message) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("success", false);
+        body.put("message", message);
+        return ResponseEntity.badRequest().body(body);
     }
 }
