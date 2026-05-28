@@ -38,6 +38,7 @@ public class OrderController {
          */
 
         @PostMapping("/place")
+        @Transactional
         public ResponseEntity<?> placeOrder(Authentication auth) {
 
                 String email = auth.getName();
@@ -47,7 +48,7 @@ public class OrderController {
                                 .orElseThrow(() -> new RuntimeException("User not found"));
 
                 return ResponseEntity.ok(
-                                orderService.placeOrder(user));
+                                new OrderDTO(orderService.placeOrder(user)));
         }
 
         /*
@@ -77,6 +78,7 @@ public class OrderController {
          */
 
         @PutMapping("/cancel/{orderId}")
+        @Transactional
         public ResponseEntity<?> cancelOrder(
 
                         @PathVariable Long orderId,
@@ -95,7 +97,7 @@ public class OrderController {
                                 .orElseThrow();
 
                 return ResponseEntity.ok(
-                                orderService.cancelOrder(orderId, user));
+                                new OrderDTO(orderService.cancelOrder(orderId, user)));
         }
 
         /*
@@ -121,6 +123,7 @@ public class OrderController {
          */
 
         @PostMapping("/buy-now")
+        @Transactional
         public OrderDTO buyNow(
 
                         @RequestParam Long productId,
@@ -152,6 +155,7 @@ public class OrderController {
 
         @PutMapping("/status/{id}")
         @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+        @Transactional
         public OrderDTO updateStatus(
 
                         @PathVariable Long id,

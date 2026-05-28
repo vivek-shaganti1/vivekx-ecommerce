@@ -54,6 +54,7 @@ public class CartController {
     ========================================= */
 
     @PostMapping("/add")
+    @Transactional
     public ResponseEntity<?> addToCart(
 
             @RequestBody CartRequest request,
@@ -76,7 +77,7 @@ public class CartController {
 
 
         Product product = productRepo
-                .findById(request.getProductId())
+                 .findById(request.getProductId())
                 .orElseThrow(() ->
                         new RuntimeException("Product not found"));
 
@@ -148,6 +149,7 @@ public class CartController {
     ========================================= */
 
     @PutMapping("/update/{cartId}")
+    @Transactional
     public ResponseEntity<?> updateQuantity(
 
             @PathVariable Long cartId,
@@ -208,6 +210,7 @@ public class CartController {
     ========================================= */
 
     @DeleteMapping("/remove/{cartId}")
+    @Transactional
     public ResponseEntity<?> removeItem(
 
             @PathVariable Long cartId,

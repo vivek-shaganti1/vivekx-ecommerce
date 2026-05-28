@@ -122,6 +122,7 @@ public class ProductController {
     // add product
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     public Product addProduct(@RequestBody Product product) {
 
         // auto slug
@@ -169,6 +170,7 @@ public class ProductController {
     // update product
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     public Product updateProduct(@PathVariable Long id,
 
                                  @RequestBody Product product) {
@@ -257,6 +259,7 @@ public class ProductController {
     // soft delete (hide product)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     public void deleteProduct(@PathVariable Long id) {
 
         Product product = productRepo
@@ -276,6 +279,7 @@ public class ProductController {
     // restore deleted product
     @PutMapping("/restore/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     public Product restoreProduct(@PathVariable Long id){
 
         Product product = productRepo
@@ -295,6 +299,7 @@ public class ProductController {
     // toggle active / hidden
     @PutMapping("/toggle/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     public Product toggleProduct(@PathVariable Long id){
 
         Product product = productRepo
