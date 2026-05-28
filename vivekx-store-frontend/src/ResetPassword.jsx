@@ -88,7 +88,7 @@ export default function ResetPassword() {
       })
       .then(() => {
         setDone(true);
-        setTimeout(() => navigate("/login"), 2500);
+        setTimeout(() => navigate("/login"), 300);
       })
       .catch((err) => {
         setMessage({ text: err.message, type: "error" });

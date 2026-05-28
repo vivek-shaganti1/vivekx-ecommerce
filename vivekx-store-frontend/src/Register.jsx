@@ -74,7 +74,7 @@ export default function Register() {
       .then(() => {
         setSuccess(true);
         setData({ name: "", email: "", password: "" });
-        setTimeout(() => navigate("/login"), 2200);
+        setTimeout(() => navigate("/login"), 300);
       })
       .catch((err) => {
         setMessage({ text: err.message, type: "error" });

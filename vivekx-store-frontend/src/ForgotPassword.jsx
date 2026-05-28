@@ -54,7 +54,7 @@ export default function ForgotPassword() {
       })
       .then(() => {
         setSent(true);
-        setTimeout(() => navigate("/reset-password"), 2500);
+        setTimeout(() => navigate("/reset-password"), 300);
       })
       .catch((err) => {
         setMessage({ text: err.message, type: "error" });

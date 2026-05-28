@@ -91,7 +91,7 @@ export default function Login() {
         localStorage.setItem("user", JSON.stringify(user));
         window.dispatchEvent(new Event("auth-change"));
         setMessage({ text: "Welcome back! Redirecting…", type: "success" });
-        setTimeout(() => navigate("/home"), 800);
+        navigate("/home");
       })
       .catch((err) => {
         setMessage({ text: err.message, type: "error" });
