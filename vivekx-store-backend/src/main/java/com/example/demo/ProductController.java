@@ -1,10 +1,14 @@
 package com.example.demo;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.dto.ProductDTO;
 
 @RestController
 @RequestMapping("/api/products")
@@ -18,51 +22,95 @@ public class ProductController {
        PUBLIC
     ===================== */
 
+    // test endpoint to isolate entity/DB issues
+    @GetMapping("/test")
+    public List<Map<String, Object>> getTestProducts() {
+        try {
+            Map<String, Object> testProduct = new HashMap<>();
+            testProduct.put("id", 999L);
+            testProduct.put("name", "Test Product");
+            testProduct.put("price", 19.99);
+            testProduct.put("slug", "test-product");
+            testProduct.put("category", "Test");
+            testProduct.put("imageUrl", "https://via.placeholder.com/150");
+            testProduct.put("images", List.of(Map.of("id", 1L, "image", "https://via.placeholder.com/150")));
+            testProduct.put("sizes", List.of(Map.of("id", 1L, "size", "M")));
+            testProduct.put("colors", List.of(Map.of("id", 1L, "color", "Red")));
+            return List.of(testProduct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
+
     // get all active products
     @GetMapping
-    public List<Product> getAllProducts() {
-
-        return productRepo.findByActiveTrue();
-
+    public List<ProductDTO> getAllProducts() {
+        try {
+            return productRepo.findByActiveTrue().stream()
+                    .map(ProductDTO::new)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error fetching active products: " + e.getMessage(), e);
+        }
     }
 
 
     // get product by slug
     @GetMapping("/slug/{slug}")
-    public Product getProductBySlug(@PathVariable String slug) {
-
-        return productRepo.findBySlug(slug)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
+    public ProductDTO getProductBySlug(@PathVariable String slug) {
+        try {
+            Product p = productRepo.findBySlug(slug)
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+            return new ProductDTO(p);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error fetching product by slug: " + e.getMessage(), e);
+        }
     }
 
 
     // get product by id
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id) {
-
-        return productRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
+    public ProductDTO getProductById(@PathVariable Long id) {
+        try {
+            Product p = productRepo.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+            return new ProductDTO(p);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error fetching product by id: " + e.getMessage(), e);
+        }
     }
 
 
     // filter by category
     @GetMapping("/category/{category}")
-    public List<Product> getByCategory(@PathVariable String category){
-
-        return productRepo.findByCategory(category);
-
+    public List<ProductDTO> getByCategory(@PathVariable String category){
+        try {
+            return productRepo.findByCategory(category).stream()
+                    .map(ProductDTO::new)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error fetching products by category: " + e.getMessage(), e);
+        }
     }
 
 
     // admin view all products (including hidden)
     @GetMapping("/admin/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Product> getAllProductsAdmin(){
-
-        return productRepo.findAll();
-
+    public List<ProductDTO> getAllProductsAdmin(){
+        try {
+            return productRepo.findAll().stream()
+                    .map(ProductDTO::new)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error fetching all products for admin: " + e.getMessage(), e);
+        }
     }
 
 

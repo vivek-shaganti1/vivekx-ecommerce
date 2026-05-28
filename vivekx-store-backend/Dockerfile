@@ -1,24 +1,19 @@
-# ===============================
-# BUILD STAGE
-# ===============================
-FROM maven:3.9.6-eclipse-temurin-17 AS build
-
+# ==========================================
+# STAGE 1: BUILD JAR FILE
+# ==========================================
+FROM maven:3.8.5-openjdk-17 AS builder
 WORKDIR /app
-
-COPY . .
-
+COPY pom.xml .
+# cache maven dependencies
+RUN mvn dependency:go-offline -B
+COPY src ./src
 RUN mvn clean package -DskipTests
 
-
-# ===============================
-# RUN STAGE
-# ===============================
-FROM eclipse-temurin:17-jre
-
+# ==========================================
+# STAGE 2: LIGHTWEIGHT RUNTIME IMAGE
+# ==========================================
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-
-COPY --from=build /app/target/*.jar app.jar
-
+COPY --from=builder /app/target/myfirstAppp-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]

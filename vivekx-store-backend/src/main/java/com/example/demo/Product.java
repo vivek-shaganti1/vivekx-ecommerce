@@ -1,10 +1,13 @@
 package com.example.demo;
-import java.util.List;
+import java.util.Set;
+import java.util.LinkedHashSet;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "product")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Product {
 
     @Id
@@ -42,17 +45,17 @@ public class Product {
     private String description;
 
     /* product variants */
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
-    private List<ProductImage> images;
+    private Set<ProductImage> images = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference(value="product-size")
-    private List<ProductSize> sizes;
+    private Set<ProductSize> sizes = new LinkedHashSet<>();
 
     @JsonManagedReference(value="product-color")
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductColor> colors;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<ProductColor> colors = new LinkedHashSet<>();
 
    
 
@@ -154,27 +157,27 @@ public class Product {
         this.description = description;
     }
 
-    public List<ProductImage> getImages() {
+    public Set<ProductImage> getImages() {
         return images;
     }
 
-    public void setImages(List<ProductImage> images) {
+    public void setImages(Set<ProductImage> images) {
         this.images = images;
     }
 
-    public List<ProductSize> getSizes() {
+    public Set<ProductSize> getSizes() {
         return sizes;
     }
 
-    public void setSizes(List<ProductSize> sizes) {
+    public void setSizes(Set<ProductSize> sizes) {
         this.sizes = sizes;
     }
 
-    public List<ProductColor> getColors() {
+    public Set<ProductColor> getColors() {
         return colors;
     }
 
-    public void setColors(List<ProductColor> colors) {
+    public void setColors(Set<ProductColor> colors) {
         this.colors = colors;
     }
     public String getProductCode() {
@@ -215,6 +218,14 @@ public class Product {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+    public ProductCollection getCollection() {
+        return collection;
+    }
+
+    public void setCollection(ProductCollection collection) {
+        this.collection = collection;
     }
 
 }
