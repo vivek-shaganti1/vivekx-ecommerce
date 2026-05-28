@@ -1,41 +1,25 @@
+# docker-compose.yml — LOCAL DEV ONLY (not used on Render)
+# This connects the Spring Boot backend to Neon PostgreSQL via environment variables.
+# Copy .env.example to .env and fill in your Neon credentials before running.
+#
+# Usage:
+#   docker compose up --build
+
 services:
-  mysql:
-    image: mysql:8
-    container_name: mysql
-
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: trainingdb
-
-    ports:
-      - "3307:3306"
-
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   backend:
     build: .
-    container_name: springboot-app
-
+    container_name: vivekx-backend
     ports:
       - "8080:8080"
-
-    depends_on:
-      mysql:
-        condition: service_healthy
-
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/trainingdb
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      DB_PASSWORD: root
-      JWT_SECRET: vivekxsupersecretjwt
-
-volumes:
-  mysql_data:
+      # Neon PostgreSQL — set your real values in a local .env file
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      # Mail (optional for local dev)
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME:-}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-}
+      # Razorpay (optional for local dev)
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-}
