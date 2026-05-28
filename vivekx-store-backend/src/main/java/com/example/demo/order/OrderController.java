@@ -13,6 +13,8 @@ import org.springframework.security.core.Authentication;
 
 import com.example.demo.UserRepository;
 import com.example.demo.User;
+import com.example.demo.dto.OrderDTO;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -54,7 +56,7 @@ public class OrderController {
          */
 
         @GetMapping("/my")
-        public List<Order> getMyOrders(Authentication auth) {
+        public List<OrderDTO> getMyOrders(Authentication auth) {
 
                 String email = auth.getName();
 
@@ -62,7 +64,9 @@ public class OrderController {
                                 .findByEmail(email)
                                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-                return orderRepo.findByUser(user);
+                return orderRepo.findByUser(user).stream()
+                                .map(OrderDTO::new)
+                                .collect(Collectors.toList());
         }
 
         /*
@@ -101,9 +105,11 @@ public class OrderController {
 
         @GetMapping("/all")
         @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-        public List<Order> getAllOrders() {
+        public List<OrderDTO> getAllOrders() {
 
-                return orderRepo.findAll();
+                return orderRepo.findAll().stream()
+                                .map(OrderDTO::new)
+                                .collect(Collectors.toList());
 
         }
 
@@ -114,7 +120,7 @@ public class OrderController {
          */
 
         @PostMapping("/buy-now")
-        public Order buyNow(
+        public OrderDTO buyNow(
 
                         @RequestParam Long productId,
                         @RequestParam int quantity,
@@ -128,13 +134,13 @@ public class OrderController {
                                 .findByEmail(email)
                                 .orElseThrow();
 
-                return orderService.buyNow(
+                return new OrderDTO(orderService.buyNow(
 
                                 productId,
                                 quantity,
                                 user
 
-                );
+                ));
         }
 
         /*
@@ -145,7 +151,7 @@ public class OrderController {
 
         @PutMapping("/status/{id}")
         @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-        public Order updateStatus(
+        public OrderDTO updateStatus(
 
                         @PathVariable Long id,
                         @RequestParam String status
@@ -158,7 +164,7 @@ public class OrderController {
 
                 order.setStatus(status);
 
-                return orderRepo.save(order);
+                return new OrderDTO(orderRepo.save(order));
         }
 
         /*
